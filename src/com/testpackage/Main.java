@@ -12,44 +12,44 @@ public class Main {
         Scanner sca2 = new Scanner(System.in);
         System.out.println("Введите слово:");
         String word = sca2.nextLine();
-        word.trim();
-        ArrayList<String> arrayOfWords = new ArrayList<>(1000);
-        fillToArray(stringOfSymbols, arrayOfWords);
-        int numberOfMismatches=0;
+        word = word.trim();
+        ArrayList<String> arrayOfWords = split(stringOfSymbols);
+        int numberOfMismatches = 0;
         for (int i = 0; i < arrayOfWords.size(); i++) {
             int lengthWordInArray = arrayOfWords.get(i).length();  //длинна слова в массиве
-            int lengthWord=word.length();    //длинна заданного слова
+            int lengthWord = word.length();    //длинна заданного слова
             if (lengthWord == lengthWordInArray) {
                 System.out.println(arrayOfWords.get(i));
-            }
-            else {
+            } else {
                 numberOfMismatches++;
             }
-            if(numberOfMismatches==arrayOfWords.size())
+            if (numberOfMismatches == arrayOfWords.size())
                 System.out.println("Совпадений со словом " + word + " не найдено.");
         }
 
 
     }
 
-    public static void fillToArray(String string, ArrayList<String> resultArray) {
+    public static ArrayList<String> split(String string) {
         String word = "";
         int indexArray = 0;
+        String separator = " ";
+        ArrayList<String> words = new ArrayList<>(1000);
         for (int i = 0; i < string.length(); i++) {
-            boolean isSpace = String.valueOf(' ').contains(String.valueOf(string.charAt(i)));
-            if (!isSpace) {
-                word+=string.charAt(i);
-                if (i == (string.length() - 1)) {
-                    resultArray.add(indexArray, word);
-                }
-            }
-            else {
-                if ((string.charAt(0) != ' ') ||( string.charAt(i - 1) != ' ')) {
-                    resultArray.add(indexArray, word);
+            boolean containsSeparator = separator.contains(String.valueOf(string.charAt(i)));
+            if (!containsSeparator) {
+                if ((string.charAt(0) != ' ') || (string.charAt(i - 1) != ' ')) {
+                    words.add(indexArray, word);
                     word = "";
                     indexArray++;
                 }
+            } else {
+                word += string.charAt(i);
+                if (i == (string.length() - 1)) {
+                    words.add(indexArray, word);
+                }
             }
         }
+        return words;
     }
 }
