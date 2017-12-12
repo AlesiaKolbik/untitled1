@@ -30,7 +30,36 @@ public class Main {
 
     }
 
-    public static ArrayList<String> split(String string) {
+    private static ArrayList<String> split(String string) {
+        String separator = " ";
+        ArrayList<String> words = new ArrayList<>(1000);
+        for (int i = 0; i < string.length(); i++) {
+            i = findStartIndexNextWord(string, i, separator);
+            String word = getNextWord(string, i, separator);
+            words.add(word);
+        }
+        return words;
+    }
+
+    private static int findStartIndexNextWord(String string, int index, String separator) {
+        while (separator.contains(String.valueOf(string.charAt(index)))) {
+            index++;
+        }
+        return index;
+    }
+
+    private static String getNextWord(String string, int index, String separator) {
+        StringBuilder word = new StringBuilder();
+        do {
+            word.append(string.charAt(index));
+            index++;
+        }
+        while (!separator.contains(String.valueOf(string.charAt(index))));
+        return word.toString();
+    }
+}
+
+   /* public static ArrayList<String> split(String string) {
         String word = "";
         int indexArray = 0;
         String separator = " ";
@@ -51,5 +80,5 @@ public class Main {
             }
         }
         return words;
-    }
-}
+    }*/
+
