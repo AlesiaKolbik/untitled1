@@ -14,29 +14,19 @@ public class Main {
         String word = sca2.nextLine();
         word = word.trim();
         ArrayList<String> arrayOfWords = split(stringOfSymbols);
-        int numberOfMismatches = 0;
-        for (int i = 0; i < arrayOfWords.size(); i++) {
-            int lengthWordInArray = arrayOfWords.get(i).length();  //длинна слова в массиве
-            int lengthWord = word.length();    //длинна заданного слова
-            if (lengthWord == lengthWordInArray) {
-                System.out.println(arrayOfWords.get(i));
-            } else {
-                numberOfMismatches++;
-            }
-            if (numberOfMismatches == arrayOfWords.size())
-                System.out.println("Совпадений со словом " + word + " не найдено.");
-        }
-
-
+        ArrayList<String> matches = findMatchesOfWords(arrayOfWords, word);
+        System.out.println(resultMatches(matches));
     }
 
     private static ArrayList<String> split(String string) {
         String separator = " ";
         ArrayList<String> words = new ArrayList<>(1000);
         for (int i = 0; i < string.length(); i++) {
-            i = findStartIndexNextWord(string, i, separator);
-            String word = getNextWord(string, i, separator);
+            int beginIndex = findStartIndexNextWord(string, i, separator);
+            int endIndex = findLastIndexNextWord(string, beginIndex, separator);
+            String word = getNextWord(string, beginIndex, endIndex);
             words.add(word);
+            i = endIndex;
         }
         return words;
     }
@@ -48,37 +38,44 @@ public class Main {
         return index;
     }
 
-    private static String getNextWord(String string, int index, String separator) {
-        StringBuilder word = new StringBuilder();
-        do {
-            word.append(string.charAt(index));
+    private static int findLastIndexNextWord(String string, int index, String separator) {
+        while (!separator.contains(String.valueOf(string.charAt(index)))) {
             index++;
+            if (index == string.length() - 1)
+                break;
         }
-        while (!separator.contains(String.valueOf(string.charAt(index))));
+        return index;
+    }
+
+    private static String getNextWord(String string, int beginIndex, int endIndex) {
+        StringBuilder word = new StringBuilder();
+        for (int i = beginIndex; i < endIndex; i++) {
+            word.append(string.charAt(i));
+        }
         return word.toString();
     }
-}
 
-   /* public static ArrayList<String> split(String string) {
-        String word = "";
-        int indexArray = 0;
-        String separator = " ";
-        ArrayList<String> words = new ArrayList<>(1000);
-        for (int i = 0; i < string.length(); i++) {
-            boolean containsSeparator = separator.contains(String.valueOf(string.charAt(i)));
-            if (!containsSeparator) {
-                if ((string.charAt(0) != ' ') || (string.charAt(i - 1) != ' ')) {
-                    words.add(indexArray, word);
-                    word = "";
-                    indexArray++;
-                }
-            } else {
-                word += string.charAt(i);
-                if (i == (string.length() - 1)) {
-                    words.add(indexArray, word);
-                }
+    private static ArrayList<String> findMatchesOfWords(ArrayList array, String word) {
+        ArrayList<String> matches = new ArrayList<>();
+        for (Object item : array) {
+            String wordFromArray = String.valueOf(item);
+            int lengthWordInArray = wordFromArray.length();
+            int lengthWord = word.length();
+            if (lengthWord == lengthWordInArray) {
+                matches.add(wordFromArray);
             }
         }
-        return words;
-    }*/
+        return matches;
+    }
 
+    private static String resultMatches(ArrayList<String> matches) {
+        StringBuilder result = new StringBuilder();
+        if (matches.size() == 0)
+            result = new StringBuilder("Совпадений не найдено");
+        else
+            for (String match : matches) {
+                result.append(match).append(" ");
+            }
+        return result.toString();
+    }
+}
